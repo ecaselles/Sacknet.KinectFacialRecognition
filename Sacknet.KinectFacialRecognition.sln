@@ -1,11 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio Express 2013 for Windows Desktop
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sacknet.KinectFacialRecognition", "Sacknet.KinectFacialRecognition\Sacknet.KinectFacialRecognition.csproj", "{D10C23EC-AB96-4103-9D53-0C2089A3BCFB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sacknet.KinectFacialRecognitionDemo", "Sacknet.KinectFacialRecognitionDemo\Sacknet.KinectFacialRecognitionDemo.csproj", "{7DEB49BA-7C81-44E8-B68E-F7BD0A7C10F1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sacknet.KinectFacialRecognitionTests", "Sacknet.KinectFacialRecognitionTests\Sacknet.KinectFacialRecognitionTests.csproj", "{14E8FEC6-B95E-4F00-BDD1-F4FC5322180F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightBuzz.Vitruvius", "LightBuzz.Vitruvius\LightBuzz.Vitruvius.csproj", "{89E39683-D56D-4604-971B-587C22C62934}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightBuzz.Vitruvius.WPF", "LightBuzz.Vitruvius.WPF\LightBuzz.Vitruvius.WPF.csproj", "{8BAE0B01-2DD9-44AD-824E-5FE63C0F64D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +31,14 @@ Global
 		{14E8FEC6-B95E-4F00-BDD1-F4FC5322180F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14E8FEC6-B95E-4F00-BDD1-F4FC5322180F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14E8FEC6-B95E-4F00-BDD1-F4FC5322180F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89E39683-D56D-4604-971B-587C22C62934}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89E39683-D56D-4604-971B-587C22C62934}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89E39683-D56D-4604-971B-587C22C62934}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89E39683-D56D-4604-971B-587C22C62934}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BAE0B01-2DD9-44AD-824E-5FE63C0F64D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BAE0B01-2DD9-44AD-824E-5FE63C0F64D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BAE0B01-2DD9-44AD-824E-5FE63C0F64D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BAE0B01-2DD9-44AD-824E-5FE63C0F64D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

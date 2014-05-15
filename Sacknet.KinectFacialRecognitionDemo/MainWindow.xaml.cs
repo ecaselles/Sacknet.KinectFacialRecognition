@@ -9,6 +9,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Microsoft.Kinect;
 using Sacknet.KinectFacialRecognition;
+using LightBuzz.Vitruvius;
+using LightBuzz.Vitruvius.WPF;
 
 namespace Sacknet.KinectFacialRecognitionDemo
 {
@@ -21,6 +23,10 @@ namespace Sacknet.KinectFacialRecognitionDemo
         private KinectFacialRecognitionEngine engine;
         private ObservableCollection<TargetFace> targetFaces = new ObservableCollection<TargetFace>();
         private CheckinService checkinService = new CheckinService();
+        private GestureController _gestureController;
+        private string detectedName;
+
+        Mode _mode = Mode.Color;
         
 
         KinectSensor kinectSensor = null;
@@ -49,9 +55,18 @@ namespace Sacknet.KinectFacialRecognitionDemo
                 return;
             }
 
+            kinectSensor.EnableAllStreams();
             kinectSensor.SkeletonStream.Enable();
             kinectSensor.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
             kinectSensor.DepthStream.Enable(DepthImageFormat.Resolution640x480Fps30);
+
+            kinectSensor.ColorFrameReady += Sensor_ColorFrameReady;
+            kinectSensor.DepthFrameReady += Sensor_DepthFrameReady;
+            kinectSensor.SkeletonFrameReady += Sensor_SkeletonFrameReady;
+
+            _gestureController = new GestureController(GestureType.All);
+            _gestureController.GestureRecognized += GestureController_GestureRecognized;
+
             kinectSensor.Start();
 
             AllFramesReadyFrameSource frameSource = new AllFramesReadyFrameSource(kinectSensor);
@@ -117,20 +132,11 @@ namespace Sacknet.KinectFacialRecognitionDemo
                     }
 
 
-                    kinectSensor.Stop();
+                    detectedName = face.Key;
 
-                    MessageBoxResult dialogResult = MessageBox.Show("Hello " + face.Key + ", would you like to check in/out?", "", MessageBoxButton.YesNo);
-                    if (dialogResult == MessageBoxResult.Yes)
-                    {
-                        checkinService.CheckInCheckOutPerson(face.Key);
-                        kinectSensor.Start();
-                    }
-                    else 
-                    {
-                        kinectSensor.Start();
-                    }
+                    faceDetected(detectedName);
 
-
+                    //Waiting now the user to do the gesture
 
                 }
 
@@ -193,6 +199,117 @@ namespace Sacknet.KinectFacialRecognitionDemo
 
                     return this.bitmapSource;
                 }
+            }
+        }
+
+
+        /*Gesture library callbacks*/
+
+
+        void Sensor_ColorFrameReady(object sender, ColorImageFrameReadyEventArgs e)
+        {
+            using (var frame = e.OpenColorImageFrame())
+            {
+                if (frame != null)
+                {
+                    if (_mode == Mode.Color)
+                    {
+                        Video.Source = frame.ToBitmap();
+                    }
+                }
+            }
+        }
+
+        void Sensor_DepthFrameReady(object sender, DepthImageFrameReadyEventArgs e)
+        {
+            using (var frame = e.OpenDepthImageFrame())
+            {
+                if (frame != null)
+                {
+                    if (_mode == Mode.Depth)
+                    {
+                        Video.Source = frame.ToBitmap();
+                    }
+                }
+            }
+        }
+
+        void Sensor_SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
+        {
+            using (var frame = e.OpenSkeletonFrame())
+            {
+                if (frame != null)
+                {
+                    canvas.ClearSkeletons();
+
+                    if (!this.showSkeleton.IsChecked.Value)
+                    {
+                        return;
+                    }    
+     
+                    //tblHeights.Text = string.Empty;
+
+                    var skeletons = frame.Skeletons().Where(s => s.TrackingState == SkeletonTrackingState.Tracked);
+
+                    foreach (var skeleton in skeletons)
+                    {
+                        if (skeleton != null)
+                        {
+                            // Update skeleton gestures.
+                            _gestureController.Update(skeleton);
+
+                            // Draw skeleton.
+                            canvas.DrawSkeleton(skeleton);
+
+                            // Display user height.
+                            //tblHeights.Text += string.Format("\nUser {0}: {1}cm", skeleton.TrackingId, skeleton.Height());
+                        }
+                    }
+                }
+            }
+        }
+
+        void GestureController_GestureRecognized(object sender, GestureEventArgs e)
+        {
+            // Display the gesture type.
+            tblGestures.Text = e.Name;
+
+            // Do something according to the type of the gesture.
+            if (e.Name.Equals("JoinedHands") || e.Name.Equals("ZoomIn") || e.Name.Equals("ZoomOut") || e.Type == GestureType.JoinedHands || e.Type == GestureType.ZoomIn || e.Type == GestureType.ZoomOut )
+            {
+               checkinGestureDetected();
+            }
+        }
+
+        public enum Mode
+        {
+            Color,
+            Depth
+        }
+
+        private void checkinGestureDetected() {
+            kinectSensor.Stop();
+/*
+            MessageBoxResult dialogResult = MessageBox.Show("Hello " + detectedName + ", would you like to check in/out?", "", MessageBoxButton.YesNo);
+            if (dialogResult == MessageBoxResult.Yes)
+            {
+*/               checkinService.CheckInCheckOutPerson(detectedName);
+                kinectSensor.Start();
+                welcomeTextBlock.Visibility = Visibility.Hidden;
+/*            }
+            else 
+            {
+                kinectSensor.Start();
+            }
+ */
+        }
+
+        private void faceDetected(string name)
+        {
+            if (welcomeTextBlock.Visibility == Visibility.Hidden)
+            {
+                welcomeTextBlock.Text = "Hello " + name + ", would you like to check in/out?";
+                welcomeTextBlock.Visibility = Visibility.Visible;
             }
         }
     }

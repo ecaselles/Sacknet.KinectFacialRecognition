@@ -39,6 +39,7 @@
                         <ColumnDefinition Width="227*"/>
                     </Grid.ColumnDefinitions>
                     <Image x:Name="Video" Width="647" Height="499" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,28,0,0" Grid.ColumnSpan="2" />
+
                     <TextBlock Text="Enter your name and press capture - a training picture will be taken in 2 seconds.  You must have at least 2 training images to enable recognition." Width="320" HorizontalAlignment="Left" TextWrapping="Wrap" Margin="5,543,0,0" Grid.ColumnSpan="2" />
                     <TextBox x:Name="NameField" Height="25" Width="200" HorizontalAlignment="Left" VerticalAlignment="Top" Text="Face 1" Margin="67,605,0,0" Grid.ColumnSpan="2" />
                     <PasswordBox x:Name="Password_Field" Height="25" VerticalAlignment="Top" Margin="67,635,1017,0" Grid.ColumnSpan="2" />
@@ -63,10 +64,17 @@
                 </Grid>
 
             </TabItem>
-            <TabItem Header="Time Tracking" Margin="-2,-2,-2,2">
+            <TabItem Header="Time Tracking" Margin="-2,-2,-2,0" Height="23" VerticalAlignment="Top">
                 <Grid>
-                    <Image x:Name="CheckinVideo" Width="518" Height="499" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,28,0,0" />
-                    <WebBrowser HorizontalAlignment="Left" Height="678" Margin="533,10,0,0" VerticalAlignment="Top" Width="741" x:Name="ttWebView"/>
+                    <Image x:Name="CheckinVideo" Width="518" Height="409" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" />
+                    <Canvas Name="canvas"  Width="518" Height="391" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,28,0,0"/>
+                    <WebBrowser HorizontalAlignment="Left" Height="553" Margin="533,10,0,0" VerticalAlignment="Top" Width="741" x:Name="ttWebView" Panel.ZIndex="1"/>
+                    <TextBlock  Name="tblGestures" HorizontalAlignment="Left" Margin="10,437,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" RenderTransformOrigin="0.771,-7.703"/>
+                    <CheckBox Content="Show Skeleton" HorizontalAlignment="Left" Margin="89,437,0,0" VerticalAlignment="Top" Name="showSkeleton"/>
+                    <TextBlock Name="welcomeTextBlock"  HorizontalAlignment="Left" Margin="10,596,0,0" TextWrapping="Wrap" Visibility="Hidden" Text="Hello manolo, join hands to check in/out!" VerticalAlignment="Top" Height="131" Width="1264" Background="#FF9B4F96" Foreground="White" FontSize="48" FontWeight="Bold" TextAlignment="Center"  Panel.ZIndex="100"/>
+
+
+
                 </Grid>
             </TabItem>
         </TabControl>

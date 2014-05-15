@@ -15,7 +15,7 @@ namespace Sacknet.KinectFacialRecognition
         /// Initializes a new instance of the <see cref="ManagedEigenObjectRecognizer"/> class.
         /// </summary>
         public ManagedEigenObjectRecognizer(IEnumerable<TargetFace> targetFaces)
-            : this(targetFaces, 2000)
+            : this(targetFaces, 5000)
         {
         }
 

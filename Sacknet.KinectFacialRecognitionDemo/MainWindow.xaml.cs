@@ -289,26 +289,30 @@ namespace Sacknet.KinectFacialRecognitionDemo
 
         private void checkinGestureDetected() {
             kinectSensor.Stop();
-/*
-            MessageBoxResult dialogResult = MessageBox.Show("Hello " + detectedName + ", would you like to check in/out?", "", MessageBoxButton.YesNo);
-            if (dialogResult == MessageBoxResult.Yes)
+            String msg = checkinService.CheckInCheckOutPerson(detectedName);
+            
+            welcomeTextBlock.Text = msg;
+
+            //Timeout
+
+            var timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(10);
+            timer.Tick += (s2, e2) =>
             {
-*/               checkinService.CheckInCheckOutPerson(detectedName);
+                timer.Stop();
                 kinectSensor.Start();
                 welcomeTextBlock.Visibility = Visibility.Hidden;
-/*            }
-            else 
-            {
-                kinectSensor.Start();
-            }
- */
+            };
+            timer.Start();
+
+            
         }
 
         private void faceDetected(string name)
         {
             if (welcomeTextBlock.Visibility == Visibility.Hidden)
             {
-                welcomeTextBlock.Text = "Hello " + name + ", would you like to check in/out?";
+                welcomeTextBlock.Text = "Hello " + name + ", join hands to check in/out";
                 welcomeTextBlock.Visibility = Visibility.Visible;
             }
         }

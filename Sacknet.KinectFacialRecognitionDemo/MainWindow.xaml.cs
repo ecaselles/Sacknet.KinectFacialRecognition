@@ -107,7 +107,7 @@ namespace Sacknet.KinectFacialRecognitionDemo
             {
                 Console.WriteLine("Recognized face (key: " + face.Key + ") with distance: " + face.EigenDistance);
 
-                if (!string.IsNullOrEmpty(face.Key))
+                if (!string.IsNullOrEmpty(face.Key) && this.tabs.SelectedIndex == 1)
                 {
                     // Write the key on the image...
                     using (var g = Graphics.FromImage(e.ProcessedBitmap))
@@ -134,7 +134,7 @@ namespace Sacknet.KinectFacialRecognitionDemo
 
                 }
 
-                if (this.takeTrainingImage)
+                if (this.takeTrainingImage && this.tabs.SelectedIndex == 0)
                 {
                     this.targetFaces.Add(new BitmapSourceTargetFace
                     {
@@ -151,6 +151,7 @@ namespace Sacknet.KinectFacialRecognitionDemo
             }
 
             this.Video.Source = LoadBitmap(e.ProcessedBitmap);
+            this.CheckinVideo.Source = LoadBitmap(e.ProcessedBitmap);
         }
 
         /// <summary>

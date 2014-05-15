@@ -10,7 +10,7 @@ using System.Windows.Navigation;
 namespace Sacknet.KinectFacialRecognitionDemo
 {
 
-    enum Commands {CheckIn, CheckOut};
+    enum Commands {NoCommand, CheckIn, CheckOut};
 
     class WebBrowserHelper
     {
@@ -77,10 +77,12 @@ namespace Sacknet.KinectFacialRecognitionDemo
             {
                 this.ws.Navigate(SERVER_HOST + CMD_CHECKIN);
             }
-            else
+            else if(nextCommand == (uint) Commands.CheckOut)
             {
                 this.ws.Navigate(SERVER_HOST + CMD_CHECKOUT);
             }
+
+            nextCommand = (uint)Commands.NoCommand;
         }
     }
 }

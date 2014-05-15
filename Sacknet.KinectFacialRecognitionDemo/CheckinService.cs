@@ -12,6 +12,7 @@ namespace Sacknet.KinectFacialRecognitionDemo
     class CheckinService
     {
         private Dictionary<string, bool> dictionary = null;
+        public WebBrowserHelper webBrowserHelper;
 
         public CheckinService()
         {
@@ -34,6 +35,17 @@ namespace Sacknet.KinectFacialRecognitionDemo
                 dictionary[name] = !isPersonCheckedIn;
 
                 String msg = dictionary[name] ? "in" : "out";
+
+                if (!isPersonCheckedIn)
+                {
+                    //webBrowserHelper.login(name);
+                    webBrowserHelper.checkIn(name);
+                }
+                else
+                {
+                    //webBrowserHelper.login(name);
+                    webBrowserHelper.checkOut(name);
+                }
 
                return "Thanks " + name + ", you are now succesfully checked " + msg;
 

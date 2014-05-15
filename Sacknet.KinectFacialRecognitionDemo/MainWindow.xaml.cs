@@ -20,13 +20,17 @@ namespace Sacknet.KinectFacialRecognitionDemo
         private bool takeTrainingImage = false;
         private KinectFacialRecognitionEngine engine;
         private ObservableCollection<TargetFace> targetFaces = new ObservableCollection<TargetFace>();
+        private CheckinService checkinService = new CheckinService();
+        
+
+        KinectSensor kinectSensor = null;
 
         /// <summary>
         /// Initializes a new instance of the MainWindow class
         /// </summary>
         public MainWindow()
         {
-            KinectSensor kinectSensor = null;
+            
 
             // loop through all the Kinects attached to this PC, and start the first that is connected without an error.
             foreach (KinectSensor kinect in KinectSensor.KinectSensors)
@@ -57,6 +61,12 @@ namespace Sacknet.KinectFacialRecognitionDemo
             this.InitializeComponent();
 
             this.TrainedFaces.ItemsSource = this.targetFaces;
+
+
+            checkinService.webBrowserHelper = new WebBrowserHelper(this.ttWebView);
+            checkinService.webBrowserHelper.init();
+
+
         }
 
         [DllImport("gdi32")]
@@ -95,6 +105,8 @@ namespace Sacknet.KinectFacialRecognitionDemo
 
             if (face != null)
             {
+                Console.WriteLine("Recognized face (key: " + face.Key + ") with distance: " + face.EigenDistance);
+
                 if (!string.IsNullOrEmpty(face.Key))
                 {
                     // Write the key on the image...
@@ -103,6 +115,23 @@ namespace Sacknet.KinectFacialRecognitionDemo
                         var rect = face.TrackingResults.FaceRect;
                         g.DrawString(face.Key, new Font("Arial", 20), Brushes.Red, new System.Drawing.Point(rect.Left, rect.Top - 25));
                     }
+
+
+                    kinectSensor.Stop();
+
+                    MessageBoxResult dialogResult = MessageBox.Show("Hello " + face.Key + ", would you like to check in/out?", "", MessageBoxButton.YesNo);
+                    if (dialogResult == MessageBoxResult.Yes)
+                    {
+                        checkinService.CheckInCheckOutPerson(face.Key);
+                        kinectSensor.Start();
+                    }
+                    else 
+                    {
+                        kinectSensor.Start();
+                    }
+
+
+
                 }
 
                 if (this.takeTrainingImage)

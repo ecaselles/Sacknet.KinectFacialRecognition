@@ -17,9 +17,13 @@ namespace Sacknet.KinectFacialRecognitionDemo
     /// </summary>
     public partial class MainWindow : Window
     {
+        private bool stopRecognition = false;
+
         private bool takeTrainingImage = false;
+        private bool takeCheckingImage = false;
         private KinectFacialRecognitionEngine engine;
         private ObservableCollection<TargetFace> targetFaces = new ObservableCollection<TargetFace>();
+        private CheckinService checkinService = new CheckinService();
 
         /// <summary>
         /// Initializes a new instance of the MainWindow class
@@ -95,16 +99,7 @@ namespace Sacknet.KinectFacialRecognitionDemo
 
             if (face != null)
             {
-                if (!string.IsNullOrEmpty(face.Key))
-                {
-                    // Write the key on the image...
-                    using (var g = Graphics.FromImage(e.ProcessedBitmap))
-                    {
-                        var rect = face.TrackingResults.FaceRect;
-                        g.DrawString(face.Key, new Font("Arial", 20), Brushes.Red, new System.Drawing.Point(rect.Left, rect.Top - 25));
-                    }
-                }
-
+               
                 if (this.takeTrainingImage)
                 {
                     this.targetFaces.Add(new BitmapSourceTargetFace
@@ -119,6 +114,54 @@ namespace Sacknet.KinectFacialRecognitionDemo
                     if (this.targetFaces.Count > 1)
                         this.engine.SetTargetFaces(this.targetFaces);
                 }
+
+                if(this.takeCheckingImage)
+                {
+
+                    if (targetFaces.Count == 0)
+                    {
+                        MessageBox.Show("Please, train some faces first");
+                        return;
+                    }
+
+                    if (!string.IsNullOrEmpty(face.Key))
+                    {
+                        // Write the key on the image...
+                        using (var g = Graphics.FromImage(e.ProcessedBitmap))
+                        {
+                            var rect = face.TrackingResults.FaceRect;
+                            g.DrawString("Hello " + face.Key, new Font("Arial", 20), Brushes.Green, new System.Drawing.Point(rect.Left, rect.Top - 25));
+                        }
+
+                        if (!stopRecognition)
+                        {
+
+                            stopRecognition = true;
+
+                            String msg = checkinService.CheckInCheckOutPerson(face.Key);
+                            MessageBox.Show(msg);
+
+                            MessageBoxResult dialogResult = MessageBox.Show(msg, "", MessageBoxButton.OK);
+                            if (dialogResult == MessageBoxResult.OK)
+                            {
+                                stopRecognition = false;
+                                this.NameField.IsEnabled = true;
+                                this.TrainButton.IsEnabled = true;
+                                this.CheckinButton.IsEnabled = true;
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        // Write the key on the image...
+                        using (var g = Graphics.FromImage(e.ProcessedBitmap))
+                        {
+                            var rect = face.TrackingResults.FaceRect;
+                            g.DrawString("?????", new Font("Arial", 20), Brushes.Red, new System.Drawing.Point(rect.Left, rect.Top - 25));
+                        }
+                    }
+                }
             }
 
             this.Video.Source = LoadBitmap(e.ProcessedBitmap);
@@ -131,6 +174,7 @@ namespace Sacknet.KinectFacialRecognitionDemo
         {
             this.TrainButton.IsEnabled = false;
             this.NameField.IsEnabled = false;
+            this.CheckinButton.IsEnabled = false;
 
             var timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(2);
@@ -139,7 +183,28 @@ namespace Sacknet.KinectFacialRecognitionDemo
                 timer.Stop();
                 this.NameField.IsEnabled = true;
                 this.TrainButton.IsEnabled = true;
+                this.CheckinButton.IsEnabled = true;
                 takeTrainingImage = true;
+            };
+            timer.Start();
+        }
+
+        /// <summary>
+        /// Starts the check in/out process
+        /// </summary>
+        private void CheckInChekOut(object sender, RoutedEventArgs e)
+        {
+            this.TrainButton.IsEnabled = false;
+            this.NameField.IsEnabled = false;
+            this.CheckinButton.IsEnabled = false;
+
+            var timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(2);
+            timer.Tick += (s2, e2) =>
+            {
+                timer.Stop();
+                takeCheckingImage = true;
+               
             };
             timer.Start();
         }

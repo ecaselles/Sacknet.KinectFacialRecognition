@@ -22,5 +22,6 @@
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ItemsControl>
+        <Button x:Name="CheckinButton" Click="CheckInChekOut" Height="30" Width="100" Content="Check me in/out!" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="110,405,0,0" />
     </Grid>
 </Window>

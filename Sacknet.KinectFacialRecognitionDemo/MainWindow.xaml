@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Sacknet.KinectFacialRecognitionDemo.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Facial Recognition Demo" Height="800" Width="1300" ResizeMode="NoResize">
+        Title="Facial Recognition Time Tracking" Height="800" Width="1300" ResizeMode="NoResize">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="553*"/>
